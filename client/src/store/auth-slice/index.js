@@ -43,11 +43,26 @@ export const checkAuth = createAsyncThunk(
       "http://127.0.0.1:5000/api/auth/check-auth",
       {
         withCredentials: true,
-        headers :{
-        "Cache-Control": "no-store, no-cache,must-revalidate, proxy-revalidate",
-        //Expires: "0",
-        }
+        headers: {
+          "Cache-Control":
+            "no-store, no-cache,must-revalidate, proxy-revalidate",
+          //Expires: "0",
+        },
       }
+    );
+
+    return response.data;
+  }
+);
+
+export const logoutUser = createAsyncThunk(
+  "/auth/logout",
+
+  async () => {
+    const response = await axios.post(
+      "http://127.0.0.1:5000/api/auth/logout",{},
+
+      { withCredentials: true }
     );
 
     return response.data;
@@ -97,6 +112,11 @@ const authSlice = createSlice({
         state.isAuthenticated = action.payload.success;
       })
       .addCase(checkAuth.rejected, (state, action) => {
+        state.isLoading = false;
+        state.user = null;
+        state.isAuthenticated = false;
+      })
+      .addCase(logoutUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user = null;
         state.isAuthenticated = false;

@@ -121,9 +121,9 @@ const editProducts = async (req, res) => {
 const deleteProducts = async (req, res) => {
   try {
     const { id } = req.params;
-    const product = Products.findByIdAndDelete(id);
+    const product = await Products.findByIdAndDelete(id);
 
-    if (!findProduct) {
+    if (!product) {
       return res.status(404).json({
         success: false,
         message: "Product not found",
