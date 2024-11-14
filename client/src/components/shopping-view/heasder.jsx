@@ -1,4 +1,9 @@
-import { Link, useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Link,
+  useLocation,
+  useNavigate,
+  useSearchParams,
+} from "react-router-dom";
 import {
   Sheet,
   SheetContent,
@@ -27,7 +32,7 @@ import { fetchCartItems } from "@/store/shop/cart-slice";
 import { Label } from "../ui/label";
 
 function MenuItems() {
-  const navigate =useNavigate()
+  const navigate = useNavigate();
 
   function handleNavigate(getCurrentMenuItem) {
     sessionStorage.removeItem("filters");
@@ -39,7 +44,7 @@ function MenuItems() {
             category: [getCurrentMenuItem.id],
           }
         : null;
-            
+
     sessionStorage.setItem("filters", JSON.stringify(currentFilter));
     navigate(getCurrentMenuItem.path);
   }
@@ -62,6 +67,7 @@ function HeaderRightContent() {
   const [openCartSheet, setOpenCartSheet] = useState(false);
   const { cartItems } = useSelector((state) => state.shopCart);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   function handleLogout() {
     dispatch(logoutUser());
   }
@@ -101,15 +107,24 @@ function HeaderRightContent() {
             </AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
-        <DropdownMenuContent side="bottom" className="w-56 bg-white border rounded-lg shadow-lg">
+        <DropdownMenuContent
+          side="bottom"
+          className="w-56 bg-white border rounded-lg shadow-lg"
+        >
           <DropdownMenuLabel className="font-bold text-gray-800">
             {user?.userName}
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="hover:bg-gray-100 hover:text-orange-600 transition-colors duration-200">
+          <DropdownMenuItem
+            onClick={() => navigate("/shop/account")}
+            className="hover:bg-gray-100 hover:text-orange-600 transition-colors duration-200"
+          >
             <UserCog className="mr-2 text-gray-700" /> Account
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleLogout} className="hover:bg-gray-100 hover:text-orange-600 transition-colors duration-200">
+          <DropdownMenuItem
+            onClick={handleLogout}
+            className="hover:bg-gray-100 hover:text-orange-600 transition-colors duration-200"
+          >
             <LogOut className="mr-2 text-gray-700" /> Logout
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -122,38 +137,38 @@ function ShoppingHeader() {
   const { isAuthenticated, user } = useSelector((state) => state.auth);
 
   return (
-<header className="fixed top-0 z-50 w-full bg-white border-b shadow-md ">
-  <div className="flex h-16 items-center justify-between px-4 md:px-6">
-    <Link href="/shop/home" className="flex items-center">
-      <span className="text-2xl font-bold text-orange-600">Shop</span>
-      <span className="text-2xl font-semibold">topia</span>
-    </Link>
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="outline" size="icon" className="lg:hidden">
-          <Menu className="h-6 w-6" />
-          <span className="sr-only">Toggle Header Menu</span>
-        </Button>
-      </SheetTrigger>
-      <SheetContent side="left" className="w-full max-w-xs">
-        <SheetHeader>
-          <SheetTitle />
-          <SheetDescription />
-        </SheetHeader>
-        <MenuItems />
-        <HeaderRightContent />
-      </SheetContent>
-    </Sheet>
+    <header className="sticky top-0 z-40 w-full border-b bg-white shadow-md">
+      {/* <header className="fixed top-0 z-50 w-full bg-white border-b shadow-md "> */}
+      <div className="flex h-16 items-center justify-between px-4 md:px-6">
+        <Link to="/shop/home" className="flex items-center">
+          <span className="text-2xl font-bold text-orange-600">Shop</span>
+          <span className="text-2xl font-semibold">topia</span>
+        </Link>
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button variant="outline" size="icon" className="lg:hidden">
+              <Menu className="h-6 w-6" />
+              <span className="sr-only">Toggle Header Menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-full max-w-xs">
+            <SheetHeader>
+              <SheetTitle />
+              <SheetDescription />
+            </SheetHeader>
+            <MenuItems />
+            <HeaderRightContent />
+          </SheetContent>
+        </Sheet>
 
-    <div className="hidden lg:block">
-      <MenuItems />
-    </div>
-    <div className="hidden lg:block">
-      <HeaderRightContent />
-    </div>
-  </div>
-</header>
-
+        <div className="hidden lg:block">
+          <MenuItems />
+        </div>
+        <div className="hidden lg:block">
+          <HeaderRightContent />
+        </div>
+      </div>
+    </header>
   );
 }
 

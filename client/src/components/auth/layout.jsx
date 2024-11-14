@@ -6,7 +6,7 @@ function AuthLayout() {
       <div className="hidden lg:flex items-center justify-center bg-black w-1/2 px-12">
         <div className="max-w-md space-y-6 text-center text-primary-foreground">
           <h1 className="text-5xl font-extrabold tracking-tight">
-            Welcome to <br /> <span className="text-orange-400">Shop</span>topia
+            Welcome to <br /> <span className="text-orange-600">Shop</span>topia
           </h1>
         </div>
       </div>
