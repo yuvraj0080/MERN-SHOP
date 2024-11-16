@@ -1,6 +1,6 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import accountImg from "../../assets/account.jpg";
-import Orders from "@/components/shopping-view/orders";
+import ShoppingOrders from "@/components/shopping-view/orders";
 import Address from "@/components/shopping-view/address";
 
 function ShoppingAccount() {
@@ -34,7 +34,7 @@ function ShoppingAccount() {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="orders" className="py-4">
-              <Orders />
+              <ShoppingOrders />
             </TabsContent>
             <TabsContent value="address" className="py-4">
               <Address />

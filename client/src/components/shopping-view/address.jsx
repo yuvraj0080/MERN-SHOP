@@ -109,7 +109,7 @@ function Address() {
 
   return (
     <Card className="border border-gray-200 shadow-md rounded-lg p-6 bg-gray-50">
-      <div className="mb-6 grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3">
+      <div className="mb-6 grid gap-6 grid-cols-1 xl:grid-cols-3 md:grid-cols-2">
         {addressList && addressList.length > 0 ? (
           addressList.map((singleAddress, index) => (
             <AddressCard
