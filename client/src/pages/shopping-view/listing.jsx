@@ -39,12 +39,15 @@ function ShoppingListing() {
   const { productList, productDetails } = useSelector(
     (state) => state.shopProducts
   );
+  const { cartItems } = useSelector((state) => state.shopCart);
   const { user } = useSelector((state) => state.auth);
   const [filters, setfilters] = useState({});
   const [sort, setsort] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
-  const {toast} = useToast()
+  const { toast } = useToast();
+
+  const categorySearchParams = searchParams.get("category");
 
   function handleSort(value) {
     setsort(value);
@@ -74,7 +77,28 @@ function ShoppingListing() {
     dispatch(fetchProductDetails(getCurrentProductId));
   }
 
-  function handleAddtoCart(getCurrentProductId) {
+  function handleAddtoCart(getCurrentProductId, getCurrentProductTotalStock) {
+     
+    let getCartItems = cartItems.items || [];
+
+    if (getCartItems.length) {
+      const indexOfCurrentItem = getCartItems.findIndex(
+        (item) => item.productId === getCurrentProductId
+      );
+
+      if (indexOfCurrentItem > -1) {
+        const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+        if(getQuantity +1 > getCurrentProductTotalStock){
+            toast({
+              title: `Only ${getQuantity} quantity can be added to cart`,
+              variant:'destructive'
+            })
+
+            return
+        }
+      }
+    }
+
     dispatch(
       addToCart({
         userId: user?.id,
@@ -85,8 +109,8 @@ function ShoppingListing() {
       if (data?.payload?.success) {
         dispatch(fetchCartItems(user?.id));
         toast({
-          title: 'Added to Cart'
-        })
+          title: "Added to Cart",
+        });
       }
     });
   }
@@ -105,7 +129,7 @@ function ShoppingListing() {
   useEffect(() => {
     setsort("price-lowtohigh");
     setfilters(JSON.parse(sessionStorage.getItem("filters")) || {});
-  }, []);
+  }, [categorySearchParams]);
 
   useEffect(() => {
     if (filters !== null && sort !== null)
@@ -113,9 +137,9 @@ function ShoppingListing() {
         fetchAllFilteredProducts({ filterParams: filters, sortParams: sort })
       );
   }, [dispatch, sort, filters]);
-  console.log(filters)
+  
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6 mt-16">
+    <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6 ">
       <ProductFilter filters={filters} handleFilter={handleFilter} />
       <div className="bg-background w-full rounded-lg shadow-sm">
         <div className="p-4 flex items-center justify-between ">

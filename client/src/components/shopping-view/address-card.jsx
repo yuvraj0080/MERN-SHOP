@@ -13,9 +13,17 @@ function AddressCard({
   index,
   handleDeleteAddress,
   handleEditAddress,
+  setCurrentSelectedAddress,
 }) {
   return (
-    <Card className="rounded-lg shadow-md">
+    <Card
+      onClick={() =>
+        setCurrentSelectedAddress
+          ? setCurrentSelectedAddress(addressInfo)
+          : null
+      }
+      className="rounded-lg shadow-md"
+    >
       <CardHeader>
         <CardTitle className="text-lg font-semibold mb-2">
           Address {index + 1}

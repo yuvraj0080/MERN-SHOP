@@ -106,7 +106,7 @@ function ShoppingHome() {
   }, [productDetails]);
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100 mt-16">
+    <div className="flex flex-col min-h-screen bg-gray-100">
       {/* Carousel Section */}
       <div className="relative w-full h-[600px] overflow-hidden">
         {slides.map((slide, index) => (

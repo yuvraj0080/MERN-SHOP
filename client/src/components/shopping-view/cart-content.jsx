@@ -2,13 +2,46 @@ import { MinusIcon, PlusIcon, Trash } from "lucide-react";
 import { Button } from "../ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteCartItems, updateCartItems } from "@/store/shop/cart-slice";
-import { toast } from "@/hooks/use-toast";
+import { toast, useToast } from "@/hooks/use-toast";
 
 function UserCartItemsContent({ cartItem }) {
   const { user } = useSelector((state) => state.auth);
+  const { cartItems } = useSelector((state) => state.shopCart);
+  const { productList } = useSelector(
+    (state) => state.shopProducts
+  );
   const dispatch = useDispatch();
+  const {toast} = useToast()
 
   function handleUpdateQuantity(getCartItem, action) {
+    
+    
+    if(action =='increase'){
+      let getCartItems = cartItems.items || [];
+
+    if (getCartItems.length) {
+      const indexOfCurrentItem = getCartItems.findIndex(
+        (item) => item.productId === getCartItem?.productId
+      );
+
+      const getCurrentProductIndex = productList.findIndex(product => product._id === getCartItem.productId)
+
+      const getCurrentProductTotalStock = productList[getCurrentProductIndex].totalStock;
+      
+      if (indexOfCurrentItem > -1) {
+        const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+        if (getQuantity + 1 > getCurrentProductTotalStock) {
+          toast({
+            title: `Only ${getQuantity} quantity can be added to cart`,
+            variant: "destructive",
+          });
+
+          return;
+        }
+      }
+    }
+    }
+
     dispatch(
       updateCartItems({
         userId: user?.id,

@@ -7,9 +7,14 @@ const adminProductsRouter = require("./routes/admin/products-routes");
 const shopProductsRouter = require("./routes/shop/products-routes");
 const shopCartRouter = require("./routes/shop/cart-routes");
 const shopAddressRouter = require("./routes/shop/address-routes");
+const shopOrderRouter = require("./routes/shop/order-routes");
+const adminOrderRouter = require("./routes/admin/order-routes");
+const searchProductsRouter = require("./routes/shop/search-routes");
+
+require("dotenv").config();
 
 mongoose
-  .connect("mongodb+srv://yuvraj6a:yNR%402120@cluster0.v6qw4.mongodb.net/")
+  .connect(process.env.MONGO_URL)
   .then(() => console.log("Mongo connected"))
   .catch((error) => console.log(error));
 
@@ -37,8 +42,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use("/api/auth", authRouter);
 app.use("/api/admin/products", adminProductsRouter);
+app.use("/api/admin/orders", adminOrderRouter);
 app.use("/api/shop/products", shopProductsRouter);
 app.use("/api/shop/cart", shopCartRouter);
 app.use("/api/shop/address", shopAddressRouter);
+app.use("/api/shop/order", shopOrderRouter);
+app.use("/api/shop/search", searchProductsRouter);
+
 
 app.listen(PORT, () => console.log(`Server is now running on port ${PORT}`));

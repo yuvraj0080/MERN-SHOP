@@ -12,7 +12,7 @@ import {
 import AddressCard from "./address-card";
 import { useToast } from "@/hooks/use-toast";
 
-function Address() {
+function Address({setCurrentSelectedAddress}) {
   const initialAddressFormData = {
     address: "",
     city: "",
@@ -118,6 +118,7 @@ function Address() {
               key={index}
               index={index}
               addressInfo={singleAddress}
+              setCurrentSelectedAddress={setCurrentSelectedAddress}
             />
           ))
         ) : (

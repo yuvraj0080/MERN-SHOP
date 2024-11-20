@@ -17,14 +17,34 @@ import { useDispatch, useSelector } from "react-redux";
 function ProductDetailsDialog({ open, setOpen, productDetails }) {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
+  const { cartItems } = useSelector((state) => state.shopCart);
   const { toast } = useToast();
 
-  function handleDialogClose(){
-    setOpen(false)
-    dispatch(setProductDetails())
+  function handleDialogClose() {
+    setOpen(false);
+    dispatch(setProductDetails());
   }
 
-  function handleAddtoCart(getCurrentProductId) {
+  function handleAddtoCart(getCurrentProductId, getCurrentProductTotalStock) {
+    let getCartItems = cartItems.items || [];
+
+    if (getCartItems.length) {
+      const indexOfCurrentItem = getCartItems.findIndex(
+        (item) => item.productId === getCurrentProductId
+      );
+
+      if (indexOfCurrentItem > -1) {
+        const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+        if (getQuantity + 1 > getCurrentProductTotalStock) {
+          toast({
+            title: `Only ${getQuantity} quantity can be added to cart`,
+            variant: "destructive",
+          });
+
+          return;
+        }
+      }
+    }
     dispatch(
       addToCart({
         userId: user?.id,
@@ -59,9 +79,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
             </DialogTitle>
             {/* <h1 className="text-3xl font-extrabold">{productDetails?.title}</h1> */}
             <DialogDescription className="text-muted-foreground mb-6">
-             
-                {productDetails?.description}
-    
+              {productDetails?.description}
             </DialogDescription>
           </div>
           <div className="flex items-center justify-between">
@@ -81,12 +99,24 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
             ) : null}
           </div>
           <div className="mt-5 mb-3 ">
-            <Button
-              onClick={() => handleAddtoCart(productDetails?._id)}
-              className="w-full"
-            >
-              Add to Cart
-            </Button>
+            {productDetails?.totalStock === 0 ||
+            productDetails?.totalStock < 0 ? (
+              <Button disabled={true} className="w-full ">
+                Out Of Stock
+              </Button>
+            ) : (
+              <Button
+                onClick={() =>
+                  handleAddtoCart(
+                    productDetails?._id,
+                    productDetails?.totalStock
+                  )
+                }
+                className="w-full"
+              >
+                Add to cart
+              </Button>
+            )}
           </div>
           <Separator />
           <div className="max-h-[300px] overflow-auto mt-2">
