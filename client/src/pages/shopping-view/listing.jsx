@@ -14,7 +14,7 @@ import {
   fetchProductDetails,
 } from "@/store/shop/products-slice";
 import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
-import { ArrowUpDownIcon } from "lucide-react";
+import { ArrowUpDownIcon, FilterIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router-dom";
@@ -45,6 +45,7 @@ function ShoppingListing() {
   const [sort, setsort] = useState(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+  const [showFiltersDropdown, setShowFiltersDropdown] = useState(false);
   const { toast } = useToast();
 
   const categorySearchParams = searchParams.get("category");
@@ -78,7 +79,6 @@ function ShoppingListing() {
   }
 
   function handleAddtoCart(getCurrentProductId, getCurrentProductTotalStock) {
-     
     let getCartItems = cartItems.items || [];
 
     if (getCartItems.length) {
@@ -88,13 +88,13 @@ function ShoppingListing() {
 
       if (indexOfCurrentItem > -1) {
         const getQuantity = getCartItems[indexOfCurrentItem].quantity;
-        if(getQuantity +1 > getCurrentProductTotalStock){
-            toast({
-              title: `Only ${getQuantity} quantity can be added to cart`,
-              variant:'destructive'
-            })
+        if (getQuantity + 1 > getCurrentProductTotalStock) {
+          toast({
+            title: `Only ${getQuantity} quantity can be added to cart`,
+            variant: "destructive",
+          });
 
-            return
+          return;
         }
       }
     }
@@ -137,10 +137,16 @@ function ShoppingListing() {
         fetchAllFilteredProducts({ filterParams: filters, sortParams: sort })
       );
   }, [dispatch, sort, filters]);
-  
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-[200px_1fr] gap-6 p-4 md:p-6 ">
-      <ProductFilter filters={filters} handleFilter={handleFilter} />
+      {/* Sidebar Filter */}
+      <div className="hidden md:block">
+        <ProductFilter filters={filters} handleFilter={handleFilter} />
+      </div>
+
+      {/* Filter Dropdown for Small Screens */}
+
       <div className="bg-background w-full rounded-lg shadow-sm">
         <div className="p-4 flex items-center justify-between ">
           <h2 className="text-lg font-semibold">All Products</h2>
@@ -148,6 +154,25 @@ function ShoppingListing() {
             <span className="text-muted-foreground ">
               {productList?.length}
             </span>
+            <div className="md:hidden">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowFiltersDropdown((prev) => !prev)}
+                className="flex items-center gap-2"
+              >
+                <FilterIcon className="w-4 h-4" />
+                <span>Filters</span>
+              </Button>
+              {showFiltersDropdown && (
+                <div className="absolute z-50 bg-white rounded-lg shadow-lg w-full p-4">
+                  <ProductFilter
+                    filters={filters}
+                    handleFilter={handleFilter}
+                  />
+                </div>
+              )}
+            </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button

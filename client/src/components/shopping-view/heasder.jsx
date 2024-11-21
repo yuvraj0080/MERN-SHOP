@@ -31,7 +31,6 @@ import { useEffect, useState } from "react";
 import { fetchCartItems } from "@/store/shop/cart-slice";
 import { Label } from "../ui/label";
 
-
 function MenuItems() {
   const navigate = useNavigate();
   const location = useLocation();

@@ -4,6 +4,11 @@ import { Label } from "../ui/label";
 import { Separator } from "../ui/separator";
 
 function ProductFilter({ filters, handleFilter }) {
+
+  const capitalizeFirstLetter = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  };
+  
   return (
     <div className="bg-background rounded-lg shadow-sm">
       <div className="p-4 border-b">
@@ -13,7 +18,7 @@ function ProductFilter({ filters, handleFilter }) {
         {Object.keys(filterOptions).map((keyItems) => (
           <div key={keyItems}>
             <div>
-              <h3 className="text-base font-semibold">{keyItems}</h3>
+              <h3 className="text-base font-semibold">{capitalizeFirstLetter(keyItems)}</h3>
               <div className="grid gap-2 mt-2">
                 {filterOptions[keyItems].map((option) => (
                   <Label
